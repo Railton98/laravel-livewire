@@ -1,0 +1,50 @@
+# v3 syntax
+version: "3"
+
+# Named volumes
+volumes:
+  # MySQL Data
+  livewire-mysql-data:
+    driver: local
+
+services:
+  # MySQL (5.7)
+  db:
+    image: mysql:5.7
+    container_name: livewire-mysql
+    volumes:
+      - livewire-mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=livewire
+      - MYSQL_DATABASE=livewire
+      - MYSQL_USER=livewire
+      - MYSQL_PASSWORD=livewire
+  # PHP (with Nginx)
+  app:
+    image: ambientum/php:7.4-nginx
+    container_name: livewire-app
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www/app
+    ports:
+      - "80:8080"
+    links:
+      - db
+  # PHPMYADMIN
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: livewire-phpmyadmin
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - "81:80"
+    environment:
+      - PMA_HOST=db
+      - MYSQL_ROOT_PASSWORD=livewire
+      - MYSQL_USER=livewire
+      - MYSQL_PASSWORD=livewire
