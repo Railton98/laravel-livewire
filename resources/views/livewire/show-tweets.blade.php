@@ -2,7 +2,11 @@
     Show Tweets
 
     <p>{{$message}}</p>
-    <input type="text" name="message" id="message" wire:model="message">
+
+    <form wire:submit.prevent="create" method="post">
+        <input type="text" name="message" id="message" wire:model="message">
+        <button type="submit">Criar Tweet</button>
+    </form>
 
     <hr>
 
